@@ -9,20 +9,23 @@
 
   <body>
 
-    <script src = "lib/three.min.js"                ></script>
-    <script src = "lib/jquery.min.js"               ></script>
-    <script src = "lib/ShaderLoader.js"             ></script>
-
-    <script src = "lib/TrackballControls.js"        ></script>
+    <script src = "js/lib/three.min.js"                   ></script>
+    <script src="js/lib/gl-matrix.js"                                 ></script>
+    <script src = "js/lib/jquery.min.js"                        ></script>
+    <script src = "js/lib/ShaderLoader.js"             ></script>
+    <script src = "js/vr/VREffect.js"                                  ></script>
+    <script src = "js/vr/StereoEffect.js"                                            ></script>
+    <script src = "js/vr/VRControls.js"                    ></script>
+    <script src = "js/vr/PhoneVR.js"             ></script>
       
 
-    <script src = "Audio.js"                        ></script>
+    <script src = "js/Audio.js"                                             ></script>
 
 
     <script>
 
 
-      var camera, renderer, scene , controls;
+      var camera, renderer, scene , controls, effect;
       
       var audioMesh;
 
@@ -67,17 +70,27 @@
 
         scene = new THREE.Scene();
 
-        var dpr = window.devicePixelRatio || 1;
-        renderer = new THREE.WebGLRenderer();
-        renderer.setPixelRatio( dpr );
-        renderer.setSize( window.innerWidth, window.innerHeight );
+        // var dpr = window.devicePixelRatio || 1;
+        // renderer = new THREE.WebGLRenderer();
+        // renderer.setPixelRatio( dpr );
+        // renderer.setSize( window.innerWidth, window.innerHeight );
+
+        renderer = new THREE.WebGLRenderer( { antialias: true } );
+        renderer.setClearColor( 0x000000, 1 );
 
         document.body.appendChild( renderer.domElement );
 
         window.addEventListener( 'resize', onWindowResize, false );
 
-
-        controls = new THREE.TrackballControls( camera );
+            /*
+        Apply VR headset positional data to camera.
+        */
+        controls = new THREE.VRControls( camera );
+        /*
+        Apply VR stereo rendering to renderer
+        */
+        effect = new THREE.VREffect( renderer );
+        effect.setSize( window.innerWidth, window.innerHeight );
 
 
         var geo = new THREE.IcosahedronGeometry( .2 , 6 );
@@ -103,7 +116,7 @@
         requestAnimationFrame( animate );
         controls.update();
         audio.update();
-        renderer.render( scene , camera );
+        effect.render( scene, camera );
 
       }
 
@@ -112,8 +125,7 @@
 
 				camera.aspect = window.innerWidth / window.innerHeight;
 				camera.updateProjectionMatrix();
-
-				renderer.setSize( window.innerWidth, window.innerHeight );
+				effect.setSize( window.innerWidth, window.innerHeight );
 
 			}
 
@@ -130,6 +142,25 @@
       function errorCallback(){
         console.log( 'O NO' );
       }
+
+          /*
+    Listen for click event to enter full-screen VR mode
+    */
+    document.body.addEventListener( 'click', function() {
+      effect.setFullScreen( true );
+    });
+    /*
+    Listen for keyboard events
+    */
+    function onkey(event) {
+      event.preventDefault();
+
+      if (event.keyCode == 90) { // z
+        controls.resetSensor(); //zero rotation
+      } else if (event.keyCode == 70 || event.keyCode == 13) { //f or enter
+        effect.setFullScreen(true) //fullscreen
+      }
+    }
 
     </script>
 
