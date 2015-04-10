@@ -22,8 +22,11 @@
     <script src = "js/Audio.js"                                             ></script>
 
 
+    <script src = "AudioTexture.js"                                                    ></script>
+
     <script>
 
+console.log( 'hello' );
 
       var camera, renderer, scene , controls, effect;
       
@@ -61,11 +64,12 @@
 
       function init(){
 
+
         var w = window.innerWidth;
         var h = window.innerHeight;
 
-        camera = new THREE.PerspectiveCamera( 65 , w/h , .001 , 4 );
-        camera.position.z = 2;
+        camera = new THREE.PerspectiveCamera( 65 , w/h , .001 , 10 );
+        camera.position.z = 1;
        // camera.position.y = -.4;
 
         scene = new THREE.Scene();
@@ -93,7 +97,7 @@
         effect.setSize( window.innerWidth, window.innerHeight );
 
 
-        var geo = new THREE.IcosahedronGeometry( .2 , 4 );
+        var geo = new THREE.IcosahedronGeometry( .2 , 6 );
 
         var mat = new THREE.ShaderMaterial({
 
@@ -101,11 +105,26 @@
           vertexShader: shaders.vs.audio,
           fragmentShader: shaders.fs.audio,
 
+          side: THREE.DoubleSide
+
         }); 
 
         audioMesh = new THREE.Mesh( geo , mat );
  
         scene.add( audioMesh ); 
+
+        shell = new THREE.Mesh( geo , mat );
+
+        shell.scale.multiplyScalar( 10 );
+        scene.add( shell );
+
+        /*var test = new THREE.Mesh( geo , new THREE.MeshNormalMaterial({
+
+          side: THREE.DoubleSide
+        }) );
+
+        test.scale.multiplyScalar( 10 )
+        scene.add( test );*/
 
 
       }

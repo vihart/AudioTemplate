@@ -12,7 +12,7 @@ void main(){
 
   // We are also going to color our fragments
   // based on the color of the audio
-  col *= 1.5 * audio.xyz;
+  col *= 1.5 * ( vec3( 1. ) - audio.xyz);
 
   gl_FragColor = vec4( col , 1. );
 
