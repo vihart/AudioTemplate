@@ -18,7 +18,7 @@ function Audio(){
 
 
 
-  var data = this.processAudio();
+  /*var data = this.processAudio();
   
   this.texture = new THREE.DataTexture(
     data,
@@ -28,19 +28,21 @@ function Audio(){
     THREE.FloatType
   );
   
-  this.texture.needsUpdate = true;
+  this.texture.needsUpdate = true;*/
   
 
+  this.texture = new AudioTexture( this );
 }
 
 Audio.prototype.update = function(){
 
   this.analyser.getByteFrequencyData( this.analyser.array );
 
-  this.audioData = this.processAudio(); 
+  /*this.audioData = this.processAudio(); 
 
   this.texture.image.data = this.processAudio(); 
-  this.texture.needsUpdate = true;
+  this.texture.needsUpdate = true;*/
+  this.texture.update();
 
 
 }
@@ -49,19 +51,25 @@ Audio.prototype.update = function(){
 Audio.prototype.processAudio = function(){
 
 
-  var width = this.analyser.frequencyBinCount
+  var width = this.analyser.array.length;
+  //console.log( width )
  
-  var audioTextureData = new Float32Array( width );
+  var audioTextureData = new Float32Array( width  * 4 );
  
   for (var i = 0; i < width; i+=4) {
    
-    //console.log( this.analyser.array[ i / 4 ] ); 
+    //console.log( (i / 4 ) + 3 ) ; 
     audioTextureData[ i+0 ] = this.analyser.array[ (i/4) + 0 ] / 256;
     audioTextureData[ i+1 ] = this.analyser.array[ (i/4) + 1 ] / 256;
     audioTextureData[ i+2 ] = this.analyser.array[ (i/4) + 2 ] / 256;
     audioTextureData[ i+3 ] = this.analyser.array[ (i/4) + 3 ] / 256;
-    
   }
+
+  // for (var i = 0; i < width; i++) {
+   
+  //   //console.log( this.analyser.array[ i / 4 ] ); 
+  //   audioTextureData[ i ] = this.analyser.array[ (i) + 0 ] / 256;
+  // }
 
   return audioTextureData;
 
