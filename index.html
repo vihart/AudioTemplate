@@ -23,9 +23,6 @@
     <script src = "js/AudioTexture.js"                                                    ></script>
 
     <script>
-
-console.log( 'hello' );
-
       var camera, renderer, scene , controls, effect;
 
       var audioMesh;
@@ -43,11 +40,8 @@ console.log( 'hello' );
       var audio = new Audio();
 
       var uniforms = {
-
         t_audio: { type:"t"  , value: audio.texture }
-
       }
-
 
       navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 
@@ -61,14 +55,11 @@ console.log( 'hello' );
 
 
       function init(){
-
-
         var w = window.innerWidth;
         var h = window.innerHeight;
 
         camera = new THREE.PerspectiveCamera( 65 , w/h , .001 , 10 );
         camera.position.z = 1;
-       // camera.position.y = -.4;
 
         scene = new THREE.Scene();
 
@@ -84,13 +75,11 @@ console.log( 'hello' );
 
         window.addEventListener( 'resize', onWindowResize, false );
 
-            /*
-        Apply VR headset positional data to camera.
-        */
+
+        // Apply VR headset positional data to camera.
         controls = new THREE.VRControls( camera );
-        /*
-        Apply VR stereo rendering to renderer
-        */
+
+        //Apply VR stereo rendering to renderer
         effect = new THREE.VREffect( renderer );
         effect.setSize( window.innerWidth, window.innerHeight );
 
@@ -115,40 +104,25 @@ console.log( 'hello' );
 
         shell.scale.multiplyScalar( 10 );
         scene.add( shell );
-
-        /*var test = new THREE.Mesh( geo , new THREE.MeshNormalMaterial({
-
-          side: THREE.DoubleSide
-        }) );
-
-        test.scale.multiplyScalar( 10 )
-        scene.add( test );*/
-
-
       }
 
 
       function animate(){
-
         requestAnimationFrame( animate );
         controls.update();
         audio.update();
         effect.render( scene, camera );
-
       }
 
 
       function onWindowResize() {
-
 				camera.aspect = window.innerWidth / window.innerHeight;
 				camera.updateProjectionMatrix();
 				effect.setSize( window.innerWidth, window.innerHeight );
-
 			}
 
 
       function successCallback( stream ){
-
         window.stream = stream; // stream available to console
 
         audioStream = audio.ctx.createMediaStreamSource( stream );
@@ -160,12 +134,13 @@ console.log( 'hello' );
         console.log( 'O NO' );
       }
 
-          /*
+    /*
     Listen for click event to enter full-screen VR mode
     */
     document.body.addEventListener( 'click', function() {
       effect.setFullScreen( true );
     });
+
     /*
     Listen for keyboard events
     */
