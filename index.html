@@ -17,19 +17,19 @@
     <script src = "js/vr/StereoEffect.js"                                            ></script>
     <script src = "js/vr/VRControls.js"                    ></script>
     <script src = "js/vr/PhoneVR.js"             ></script>
-      
+
 
     <script src = "js/Audio.js"                                             ></script>
 
 
-    <script src = "AudioTexture.js"                                                    ></script>
+    <script src = "js/AudioTexture.js"                                                    ></script>
 
     <script>
 
 console.log( 'hello' );
 
       var camera, renderer, scene , controls, effect;
-      
+
       var audioMesh;
 
       var shaders = new ShaderLoader( 'shaders' );
@@ -45,7 +45,7 @@ console.log( 'hello' );
       var audio = new Audio();
 
       var uniforms = {
-  
+
         t_audio: { type:"t"  , value: audio.texture }
 
       }
@@ -107,11 +107,11 @@ console.log( 'hello' );
 
           side: THREE.DoubleSide
 
-        }); 
+        });
 
         audioMesh = new THREE.Mesh( geo , mat );
- 
-        scene.add( audioMesh ); 
+
+        scene.add( audioMesh );
 
         shell = new THREE.Mesh( geo , mat );
 
@@ -129,7 +129,7 @@ console.log( 'hello' );
 
       }
 
-      
+
       function animate(){
 
         requestAnimationFrame( animate );
