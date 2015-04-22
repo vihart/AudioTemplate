@@ -1,0 +1,160 @@
+<html>
+
+  <head>
+    <style>
+      body{ margin: 0px; }
+      html{ overflow: hidden }
+    </style>
+  </head>
+
+  <body>
+    <!--Library files-->
+    <script src = "js/lib/three.min.js"                   ></script>
+    <script src="js/lib/gl-matrix.js"                                 ></script>
+    <script src = "js/lib/jquery.min.js"                        ></script>
+    <script src = "js/lib/ShaderLoader.js"             ></script>
+    <!--VR related files-->
+    <script src = "js/vr/VREffect.js"                                  ></script>
+    <script src = "js/vr/StereoEffect.js"                                            ></script>
+    <script src = "js/vr/VRControls.js"                    ></script>
+    <script src = "js/vr/PhoneVR.js"             ></script>
+    <!--Audio files-->
+    <script src = "js/Audio.js"                                             ></script>
+    <script src = "js/AudioTexture.js"                                                    ></script>
+
+    <script>
+      var camera, renderer, scene , controls, effect;
+
+      var audioMesh;
+
+      var shaders = new ShaderLoader( 'shaders' );
+
+      shaders.shaderSetLoaded = function(){
+        init();
+        animate();
+      }
+
+      shaders.load( 'vs-audio' , 'audio' , 'vertex'   );
+      shaders.load( 'fs-audio' , 'audio' , 'fragment' );
+
+      var audio = new Audio();
+
+      var uniforms = {
+        t_audio: { type:"t"  , value: audio.texture }
+      }
+
+      navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+
+      var constraints = {
+        audio: true,
+      };
+
+      navigator.getUserMedia( constraints , successCallback , errorCallback );
+
+      audio.mute.gain.value = 0;
+
+
+      function init(){
+        var w = window.innerWidth;
+        var h = window.innerHeight;
+
+        camera = new THREE.PerspectiveCamera( 65 , w/h , .001 , 10 );
+        camera.position.z = 1;
+
+        scene = new THREE.Scene();
+
+        // var dpr = window.devicePixelRatio || 1;
+        // renderer = new THREE.WebGLRenderer();
+        // renderer.setPixelRatio( dpr );
+        // renderer.setSize( window.innerWidth, window.innerHeight );
+
+        renderer = new THREE.WebGLRenderer( { antialias: true } );
+        renderer.setClearColor( 0x000000, 1 );
+
+        document.body.appendChild( renderer.domElement );
+
+        window.addEventListener( 'resize', onWindowResize, false );
+
+
+        // Apply VR headset positional data to camera.
+        controls = new THREE.VRControls( camera );
+
+        //Apply VR stereo rendering to renderer
+        effect = new THREE.VREffect( renderer );
+        effect.setSize( window.innerWidth, window.innerHeight );
+
+
+        var geo = new THREE.IcosahedronGeometry( .2 , 7 );
+
+        var mat = new THREE.ShaderMaterial({
+
+          uniforms: uniforms,
+          vertexShader: shaders.vs.audio,
+          fragmentShader: shaders.fs.audio,
+
+          side: THREE.DoubleSide
+
+        });
+
+        audioMesh = new THREE.Mesh( geo , mat );
+
+        scene.add( audioMesh );
+
+        shell = new THREE.Mesh( geo , mat );
+
+        shell.scale.multiplyScalar( 10 );
+        scene.add( shell );
+      }
+
+
+      function animate(){
+        requestAnimationFrame( animate );
+        controls.update();
+        audio.update();
+        effect.render( scene, camera );
+      }
+
+
+      function onWindowResize() {
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+				effect.setSize( window.innerWidth, window.innerHeight );
+			}
+
+
+      function successCallback( stream ){
+        window.stream = stream; // stream available to console
+
+        audioStream = audio.ctx.createMediaStreamSource( stream );
+        audioStream.connect( audio.gain );
+
+      }
+
+      function errorCallback(){
+        console.log( 'O NO' );
+      }
+
+    /*
+    Listen for click event to enter full-screen VR mode
+    */
+    document.body.addEventListener( 'click', function() {
+      effect.setFullScreen( true );
+    });
+
+    /*
+    Listen for keyboard events
+    */
+    function onkey(event) {
+      event.preventDefault();
+
+      if (event.keyCode == 90) { // z
+        controls.resetSensor(); //zero rotation
+      } else if (event.keyCode == 70 || event.keyCode == 13) { //f or enter
+        effect.setFullScreen(true) //fullscreen
+      }
+    }
+
+    </script>
+
+  </body>
+</html>
