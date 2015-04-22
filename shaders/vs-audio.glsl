@@ -23,7 +23,7 @@ void main(){
 
   // To visualize the audio, we will displace the position
   // by a value based on the audio, along the normal
-  vec3 pos = position  - .05 * length( audio ) * normal;
+  vec3 pos = position  + .05 * length( audio ) * normal;
 
   //vec3 pos = position;
 
