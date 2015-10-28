@@ -97,12 +97,13 @@
         });
 
         audioMesh = new THREE.Mesh( geo , mat );
-
+        audioMesh.position.y = 1;
         scene.add( audioMesh );
 
         shell = new THREE.Mesh( geo , mat );
 
-        shell.scale.multiplyScalar( 10 );
+        shell.scale.multiplyScalar( 15 );
+        shell.position.y = 1;
         scene.add( shell );
       }
 
